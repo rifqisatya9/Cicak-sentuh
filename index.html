@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#5b4a31">
+<title>Sentuh Cicak! — Game Kucing</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;background:#d9d0bf}
+body{touch-action:none}
+#app{height:100dvh;display:flex;flex-direction:column;background:linear-gradient(#ded5c5,#c7bda9)}
+header{height:66px;flex:none;padding:8px 12px calc(8px + env(safe-area-inset-top));background:linear-gradient(180deg,#5e4b32,#382a1b);color:white;display:flex;align-items:center;justify-content:space-between;gap:8px;box-shadow:0 3px 10px #0005;z-index:10}
+.brand{font-weight:1000;font-size:18px;letter-spacing:.5px;text-shadow:0 2px #000}
+.stat{background:#251b12dd;border:2px solid #9d7036;border-radius:13px;padding:7px 10px;font-weight:900;font-size:13px;white-space:nowrap}
+#sound{width:42px;height:42px;border-radius:13px;border:2px solid #9d7036;background:#251b12;color:#fff;font-size:20px}
+#play{position:relative;flex:1;overflow:hidden;background:
+linear-gradient(90deg,#d7cdbb 1px,transparent 1px) 0 0/74px 74px,
+linear-gradient(#d7cdbb 1px,transparent 1px) 0 0/74px 74px,
+linear-gradient(135deg,#cfc5b3,#e7dfd1 55%,#c5baa7)}
+#play:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 45%,transparent 30%,#6b5b471f 100%)}
+#msg{position:absolute;z-index:8;left:50%;top:45%;transform:translate(-50%,-50%);width:min(320px,88%);text-align:center;background:#fffaf0ee;border:2px solid #a4773b;border-radius:20px;padding:18px;box-shadow:0 12px 30px #0004}
+#msg b{font-size:22px}.small{font-size:13px;line-height:1.45;margin-top:6px}
+button.main{margin-top:14px;width:100%;padding:14px;border:0;border-radius:14px;background:linear-gradient(#ffc83d,#d68b08);color:#2c1d0a;font-weight:1000;font-size:18px}
+#gecko{position:absolute;width:112px;height:68px;z-index:5;display:none;transform-origin:50% 50%;filter:drop-shadow(0 6px 4px #0004)}
+#gecko svg{width:100%;height:100%;overflow:visible}
+#cat{position:absolute;z-index:6;left:-25px;bottom:-35px;width:225px;height:280px;object-fit:cover;object-position:center 55%;border-radius:38% 50% 0 0;box-shadow:12px -8px 20px #0003;transition:transform .16s ease}
+#paw{position:absolute;z-index:7;display:none;left:145px;bottom:100px;width:92px;height:125px;transform-origin:15% 90%;pointer-events:none}
+#paw:before{content:"";position:absolute;left:25px;top:15px;width:48px;height:82px;border-radius:55% 45% 50% 50%;background:#f8f4ec;box-shadow:0 3px 8px #0004}
+.toe{position:absolute;width:18px;height:28px;border-radius:50%;background:#f8f4ec;top:0}.t1{left:18px}.t2{left:35px;top:-5px}.t3{left:51px;top:5px}
+.swipe{animation:swipe .42s cubic-bezier(.2,.9,.25,1)}@keyframes swipe{0%{transform:translate(0,0) rotate(0) scale(1)}35%{transform:translate(55px,-20px) rotate(-12deg) scale(1.03)}70%{transform:translate(80px,-5px) rotate(8deg) scale(.99)}100%{transform:translate(0,0) rotate(0) scale(1)}}
+#paw.swipe{animation:pawSwipe .42s ease-out}@keyframes pawSwipe{0%{transform:rotate(-22deg) translate(0,20px);opacity:0}20%{opacity:1}65%{transform:rotate(28deg) translate(55px,-10px);opacity:1}100%{transform:rotate(-18deg) translate(0,20px);opacity:0}}
+#hit{position:absolute;z-index:9;font-size:42px;display:none;pointer-events:none}
+.hitAnim{animation:hit .45s ease-out}@keyframes hit{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(1.5) translateY(-25px);opacity:0}}
+#hint{position:absolute;z-index:4;right:12px;bottom:12px;background:#4b3926dd;color:#fff;border:1px solid #c39555;border-radius:12px;padding:8px 10px;font-size:11px;font-weight:700}
+footer{height:34px;flex:none;text-align:center;font-size:10px;padding:8px;background:#382a1b;color:#eadfca}
+</style>
+</head>
+<body>
+<div id="app">
+<header>
+ <div class="brand">🐾 SENTUH CICAK!</div>
+ <div class="stat">⭐ <span id="score">0</span></div>
+ <div class="stat">⏱ <span id="time">30</span></div>
+ <button id="sound" aria-label="Suara">🔊</button>
+</header>
+<div id="play">
+ <div id="msg"><b>Siap bermain?</b><div class="small">Cicak akan bergerak seperti cicak asli. Dengarkan suaranya, lalu biarkan kucing menyentuhnya.</div><button class="main" id="start">▶ MULAI</button></div>
+ <div id="gecko">
+  <svg viewBox="0 0 224 136" aria-label="cicak">
+   <path d="M70 58 C42 39 17 45 8 61 C18 72 39 77 68 72 C86 70 98 66 116 67 C137 68 161 76 184 88 C200 96 215 91 220 79 C211 76 200 72 190 63 C176 50 151 44 124 45 C105 46 87 51 70 58Z" fill="#7f6b45" stroke="#493a27" stroke-width="4"/>
+   <path d="M113 48 C106 36 91 30 76 34 C69 38 67 48 74 57 C83 66 101 65 113 60Z" fill="#a68b59" stroke="#493a27" stroke-width="4"/>
+   <circle cx="92" cy="46" r="7" fill="#17130e"/><circle cx="94" cy="44" r="2" fill="#fff"/>
+   <path d="M72 58 C53 51 43 42 31 36 M73 69 C52 78 42 91 29 97 M142 55 C154 42 166 35 180 32 M143 72 C160 85 175 96 190 99" fill="none" stroke="#725c38" stroke-width="8" stroke-linecap="round"/>
+   <g fill="#5b472d"><circle cx="113" cy="53" r="5"/><circle cx="128" cy="55" r="4"/><circle cx="143" cy="59" r="5"/><circle cx="158" cy="64" r="4"/><circle cx="173" cy="70" r="5"/></g>
+   <path d="M205 83 C220 90 222 102 211 111" fill="none" stroke="#6b5736" stroke-width="7" stroke-linecap="round"/>
+  </svg>
+ </div>
+ <img id="cat" src="kucing.jpg" alt="kucing seperti foto yang diberikan">
+ <div id="paw"><i class="toe t1"></i><i class="toe t2"></i><i class="toe t3"></i></div>
+ <div id="hit">💥</div>
+ <div id="hint">🔊 Dengarkan cicak • sentuh untuk memukul</div>
+</div>
+<footer>Game ramah kucing • tanpa iklan • sentuhan layar</footer>
+</div>
+<script>
+let score=0,time=30,running=false,timer=null,raf=null,soundOn=true,audio=null,chirpTimer=null;
+const play=document.querySelector('#play'),g=document.querySelector('#gecko'),cat=document.querySelector('#cat'),paw=document.querySelector('#paw'),hit=document.querySelector('#hit'),msg=document.querySelector('#msg');
+const scoreEl=document.querySelector('#score'),timeEl=document.querySelector('#time'),soundBtn=document.querySelector('#sound');
+
+function audioInit(){if(!audio) audio=new (window.AudioContext||window.webkitAudioContext)(); if(audio.state==='suspended')audio.resume()}
+function chirp(){
+ if(!soundOn)return; audioInit(); const now=audio.currentTime;
+ const o=audio.createOscillator(), gain=audio.createGain(), filt=audio.createBiquadFilter();
+ o.type='triangle'; filt.type='bandpass'; filt.frequency.value=2600; filt.Q.value=7;
+ o.frequency.setValueAtTime(1800,now); o.frequency.exponentialRampToValueAtTime(3100,now+.055); o.frequency.exponentialRampToValueAtTime(1450,now+.13);
+ gain.gain.setValueAtTime(.0001,now); gain.gain.exponentialRampToValueAtTime(.16,now+.012); gain.gain.exponentialRampToValueAtTime(.0001,now+.15);
+ o.connect(filt).connect(gain).connect(audio.destination);o.start(now);o.stop(now+.16);
+}
+function moveGecko(){
+ const pad=8,maxX=play.clientWidth-g.offsetWidth-pad,maxY=play.clientHeight-g.offsetHeight-pad-10;
+ const x=pad+Math.random()*Math.max(1,maxX), y=pad+Math.random()*Math.max(1,maxY*.82);
+ g.style.left=x+'px';g.style.top=y+'px';
+ const rot=Math.random()*50-25; g.style.transform=`rotate(${rot}deg) scale(${.78+Math.random()*.3})`;
+}
+function start(){
+ audioInit(); if(running)return; running=true;score=0;time=30;scoreEl.textContent=0;timeEl.textContent=30;
+ msg.style.display='none';g.style.display='block';moveGecko();chirp();
+ clearInterval(timer); timer=setInterval(()=>{time--;timeEl.textContent=time;if(Math.random()<.45)chirp();if(time<=0)finish()},1000);
+}
+function finish(){running=false;clearInterval(timer);g.style.display='none';msg.innerHTML=`<b>🎉 Selesai!</b><div class="small">Skor kucing: <strong>${score}</strong><br>Tekan tombol untuk bermain lagi.</div><button class="main" id="start">▶ MAIN LAGI</button>`;msg.style.display='block';document.querySelector('#start').onclick=start}
+function catSwipe(){
+ cat.classList.remove('swipe');paw.classList.remove('swipe');void cat.offsetWidth;
+ cat.classList.add('swipe');paw.classList.add('swipe');
+}
+g.addEventListener('pointerdown',e=>{
+ if(!running)return;e.preventDefault();audioInit();score++;scoreEl.textContent=score;catSwipe();
+ const r=g.getBoundingClientRect(),p=play.getBoundingClientRect();hit.style.left=(r.left-p.left+25)+'px';hit.style.top=(r.top-p.top-5)+'px';hit.style.display='block';hit.classList.remove('hitAnim');void hit.offsetWidth;hit.classList.add('hitAnim');
+ chirp();setTimeout(()=>{hit.style.display='none'},450);moveGecko();
+});
+soundBtn.onclick=()=>{soundOn=!soundOn;soundBtn.textContent=soundOn?'🔊':'🔇';if(soundOn)chirp()};
+document.querySelector('#start').onclick=start;
+</script>
+</body></html>
