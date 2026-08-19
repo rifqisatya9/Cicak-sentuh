@@ -3,102 +3,147 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<meta name="theme-color" content="#5b4a31">
-<title>Sentuh Cicak! — Game Kucing</title>
+<meta name="theme-color" content="#3c2c1d">
+<title>Sentuh Cicak! — Realistic Hunt</title>
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;background:#d9d0bf}
+html,body{margin:0;height:100%;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",system-ui,sans-serif;background:#332719}
 body{touch-action:none}
-#app{height:100dvh;display:flex;flex-direction:column;background:linear-gradient(#ded5c5,#c7bda9)}
-header{height:66px;flex:none;padding:8px 12px calc(8px + env(safe-area-inset-top));background:linear-gradient(180deg,#5e4b32,#382a1b);color:white;display:flex;align-items:center;justify-content:space-between;gap:8px;box-shadow:0 3px 10px #0005;z-index:10}
-.brand{font-weight:1000;font-size:18px;letter-spacing:.5px;text-shadow:0 2px #000}
-.stat{background:#251b12dd;border:2px solid #9d7036;border-radius:13px;padding:7px 10px;font-weight:900;font-size:13px;white-space:nowrap}
-#sound{width:42px;height:42px;border-radius:13px;border:2px solid #9d7036;background:#251b12;color:#fff;font-size:20px}
-#play{position:relative;flex:1;overflow:hidden;background:
-linear-gradient(90deg,#d7cdbb 1px,transparent 1px) 0 0/74px 74px,
-linear-gradient(#d7cdbb 1px,transparent 1px) 0 0/74px 74px,
-linear-gradient(135deg,#cfc5b3,#e7dfd1 55%,#c5baa7)}
-#play:after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 45%,transparent 30%,#6b5b471f 100%)}
-#msg{position:absolute;z-index:8;left:50%;top:45%;transform:translate(-50%,-50%);width:min(320px,88%);text-align:center;background:#fffaf0ee;border:2px solid #a4773b;border-radius:20px;padding:18px;box-shadow:0 12px 30px #0004}
-#msg b{font-size:22px}.small{font-size:13px;line-height:1.45;margin-top:6px}
-button.main{margin-top:14px;width:100%;padding:14px;border:0;border-radius:14px;background:linear-gradient(#ffc83d,#d68b08);color:#2c1d0a;font-weight:1000;font-size:18px}
-#gecko{position:absolute;width:112px;height:68px;z-index:5;display:none;transform-origin:50% 50%;filter:drop-shadow(0 6px 4px #0004)}
+#app{height:100dvh;display:flex;flex-direction:column}
+header{height:64px;flex:none;padding:7px 9px max(7px,env(safe-area-inset-top));background:linear-gradient(#59452e,#2e2115);color:#fff;display:flex;align-items:center;gap:7px;z-index:20;box-shadow:0 3px 12px #0008}
+.logo{font-weight:1000;font-size:16px;line-height:1;text-shadow:0 2px #000;flex:1}.logo small{display:block;color:#ffd24b;font-size:9px;margin-top:3px;letter-spacing:1px}
+.stat{background:#21170f;border:1px solid #b47c36;border-radius:11px;padding:7px 9px;font-size:12px;font-weight:900;white-space:nowrap}
+#sound,#pause{width:39px;height:39px;border-radius:11px;border:1px solid #b47c36;background:#21170f;color:#fff;font-size:18px}
+#world{position:relative;flex:1;overflow:hidden;background:
+linear-gradient(90deg,#8d7458 0 7%,transparent 7% 93%,#8d7458 93%),
+linear-gradient(180deg,#b7a78e 0 15%,#ded5c5 15% 100%);
+box-shadow:inset 0 0 0 2px #241b13}
+#wallL,#wallR{position:absolute;top:0;bottom:0;width:7%;background:linear-gradient(90deg,#756049,#a58d6c);box-shadow:inset 0 0 12px #0005}
+#wallL{left:0}#wallR{right:0}
+#ceiling{position:absolute;left:7%;right:7%;top:0;height:15%;background:linear-gradient(#96866f,#b9ab94);border-bottom:3px solid #796850}
+#floor{position:absolute;left:7%;right:7%;top:15%;bottom:0;background:
+linear-gradient(90deg,#d6cbbb 1px,transparent 1px) 0 0/70px 70px,
+linear-gradient(#d6cbbb 1px,transparent 1px) 0 0/70px 70px,
+linear-gradient(135deg,#d8cfbf,#eee8dc 55%,#c8bead)}
+.hole{position:absolute;z-index:2;width:52px;height:52px;border-radius:50%;background:#24190f;box-shadow:inset 0 8px 13px #000,0 2px 5px #0006}
+#hole1{right:4%;top:27%}#hole2{left:5%;bottom:18%}
+#gecko{position:absolute;z-index:8;width:110px;height:66px;display:none;transform-origin:50% 50%;filter:drop-shadow(0 6px 4px #0005)}
+#gecko.wall{filter:drop-shadow(4px 4px 3px #0005)}
 #gecko svg{width:100%;height:100%;overflow:visible}
-#cat{position:absolute;z-index:6;left:-25px;bottom:-35px;width:225px;height:280px;object-fit:cover;object-position:center 55%;border-radius:38% 50% 0 0;box-shadow:12px -8px 20px #0003;transition:transform .16s ease}
-#paw{position:absolute;z-index:7;display:none;left:145px;bottom:100px;width:92px;height:125px;transform-origin:15% 90%;pointer-events:none}
-#paw:before{content:"";position:absolute;left:25px;top:15px;width:48px;height:82px;border-radius:55% 45% 50% 50%;background:#f8f4ec;box-shadow:0 3px 8px #0004}
-.toe{position:absolute;width:18px;height:28px;border-radius:50%;background:#f8f4ec;top:0}.t1{left:18px}.t2{left:35px;top:-5px}.t3{left:51px;top:5px}
-.swipe{animation:swipe .42s cubic-bezier(.2,.9,.25,1)}@keyframes swipe{0%{transform:translate(0,0) rotate(0) scale(1)}35%{transform:translate(55px,-20px) rotate(-12deg) scale(1.03)}70%{transform:translate(80px,-5px) rotate(8deg) scale(.99)}100%{transform:translate(0,0) rotate(0) scale(1)}}
-#paw.swipe{animation:pawSwipe .42s ease-out}@keyframes pawSwipe{0%{transform:rotate(-22deg) translate(0,20px);opacity:0}20%{opacity:1}65%{transform:rotate(28deg) translate(55px,-10px);opacity:1}100%{transform:rotate(-18deg) translate(0,20px);opacity:0}}
-#hit{position:absolute;z-index:9;font-size:42px;display:none;pointer-events:none}
-.hitAnim{animation:hit .45s ease-out}@keyframes hit{0%{transform:scale(.4);opacity:0}30%{opacity:1}100%{transform:scale(1.5) translateY(-25px);opacity:0}}
-#hint{position:absolute;z-index:4;right:12px;bottom:12px;background:#4b3926dd;color:#fff;border:1px solid #c39555;border-radius:12px;padding:8px 10px;font-size:11px;font-weight:700}
-footer{height:34px;flex:none;text-align:center;font-size:10px;padding:8px;background:#382a1b;color:#eadfca}
+#cat{position:absolute;z-index:10;width:225px;height:280px;object-fit:cover;object-position:center 52%;left:-45px;bottom:-48px;border-radius:42% 52% 0 0;filter:drop-shadow(7px -5px 10px #0004);transition:transform .18s cubic-bezier(.2,.9,.2,1),left .22s ease,top .22s ease}
+#paw{position:absolute;z-index:12;display:none;width:88px;height:120px;transform-origin:15% 88%;pointer-events:none}
+#paw:before{content:"";position:absolute;left:22px;top:18px;width:47px;height:78px;border-radius:55% 45% 50% 50%;background:#faf7ef;box-shadow:0 3px 8px #0005}
+.toe{position:absolute;width:17px;height:28px;border-radius:50%;background:#faf7ef;top:0}.t1{left:17px}.t2{left:34px;top:-6px}.t3{left:50px;top:5px}
+#paw.swing{animation:paw .43s cubic-bezier(.2,.9,.25,1)}@keyframes paw{0%{opacity:0;transform:rotate(-25deg) translate(0,15px)}18%{opacity:1}65%{opacity:1;transform:rotate(30deg) translate(50px,-12px)}100%{opacity:0;transform:rotate(-20deg) translate(0,15px)}}
+#cat.lunge{animation:lunge .42s ease-out}@keyframes lunge{0%{transform:translate(0,0) rotate(0)}45%{transform:translate(42px,-16px) rotate(-5deg)}100%{transform:translate(0,0) rotate(0)}}
+#impact{position:absolute;z-index:14;display:none;font-size:40px;pointer-events:none}
+#impact.show{animation:impact .5s ease-out}@keyframes impact{0%{opacity:0;transform:scale(.3)}25%{opacity:1}100%{opacity:0;transform:scale(1.6) translateY(-20px)}}
+#bubble{position:absolute;z-index:13;display:none;padding:7px 10px;border-radius:13px;background:#fff8df;border:2px solid #bd8736;font-size:11px;font-weight:900;box-shadow:0 3px 8px #0003}
+#msg{position:absolute;z-index:30;left:50%;top:47%;transform:translate(-50%,-50%);width:min(340px,88%);background:#fffaf0ef;border:2px solid #ad7832;border-radius:20px;padding:18px;text-align:center;box-shadow:0 15px 35px #0006}
+#msg b{font-size:22px}.desc{font-size:13px;line-height:1.45;margin-top:7px}
+.main{width:100%;margin-top:13px;border:0;border-radius:14px;padding:14px;background:linear-gradient(#ffd047,#d48a09);color:#2b1d0b;font-weight:1000;font-size:18px}
+#hint{position:absolute;z-index:5;left:50%;bottom:12px;transform:translateX(-50%);background:#392a1dd9;color:#fff;border:1px solid #b68745;border-radius:12px;padding:7px 10px;font-size:10px;font-weight:800;white-space:nowrap}
+footer{height:30px;flex:none;background:#2d2116;color:#ddcfba;text-align:center;padding:7px;font-size:9px}
 </style>
 </head>
 <body>
 <div id="app">
 <header>
- <div class="brand">🐾 SENTUH CICAK!</div>
+ <div class="logo">🐾 SENTUH CICAK!<small>REALISTIC HUNT</small></div>
  <div class="stat">⭐ <span id="score">0</span></div>
- <div class="stat">⏱ <span id="time">30</span></div>
- <button id="sound" aria-label="Suara">🔊</button>
+ <div class="stat">⏱ <span id="time">45</span></div>
+ <button id="sound">🔊</button><button id="pause">Ⅱ</button>
 </header>
-<div id="play">
- <div id="msg"><b>Siap bermain?</b><div class="small">Cicak akan bergerak seperti cicak asli. Dengarkan suaranya, lalu biarkan kucing menyentuhnya.</div><button class="main" id="start">▶ MULAI</button></div>
+<div id="world">
+ <div id="wallL"></div><div id="wallR"></div><div id="ceiling"></div><div id="floor"></div>
+ <div class="hole" id="hole1"></div><div class="hole" id="hole2"></div>
  <div id="gecko">
-  <svg viewBox="0 0 224 136" aria-label="cicak">
-   <path d="M70 58 C42 39 17 45 8 61 C18 72 39 77 68 72 C86 70 98 66 116 67 C137 68 161 76 184 88 C200 96 215 91 220 79 C211 76 200 72 190 63 C176 50 151 44 124 45 C105 46 87 51 70 58Z" fill="#7f6b45" stroke="#493a27" stroke-width="4"/>
-   <path d="M113 48 C106 36 91 30 76 34 C69 38 67 48 74 57 C83 66 101 65 113 60Z" fill="#a68b59" stroke="#493a27" stroke-width="4"/>
-   <circle cx="92" cy="46" r="7" fill="#17130e"/><circle cx="94" cy="44" r="2" fill="#fff"/>
-   <path d="M72 58 C53 51 43 42 31 36 M73 69 C52 78 42 91 29 97 M142 55 C154 42 166 35 180 32 M143 72 C160 85 175 96 190 99" fill="none" stroke="#725c38" stroke-width="8" stroke-linecap="round"/>
-   <g fill="#5b472d"><circle cx="113" cy="53" r="5"/><circle cx="128" cy="55" r="4"/><circle cx="143" cy="59" r="5"/><circle cx="158" cy="64" r="4"/><circle cx="173" cy="70" r="5"/></g>
-   <path d="M205 83 C220 90 222 102 211 111" fill="none" stroke="#6b5736" stroke-width="7" stroke-linecap="round"/>
+  <svg viewBox="0 0 224 136">
+   <path d="M70 58 C42 39 17 45 8 61 C18 72 39 77 68 72 C86 70 98 66 116 67 C137 68 161 76 184 88 C200 96 215 91 220 79 C211 76 200 72 190 63 C176 50 151 44 124 45 C105 46 87 51 70 58Z" fill="#7d6b48" stroke="#493a27" stroke-width="4"/>
+   <path d="M113 48 C106 36 91 30 76 34 C69 38 67 48 74 57 C83 66 101 65 113 60Z" fill="#a88d5d" stroke="#493a27" stroke-width="4"/>
+   <circle cx="92" cy="46" r="7" fill="#16120e"/><circle cx="94" cy="44" r="2" fill="#fff"/>
+   <path d="M72 58 C53 51 43 42 31 36 M73 69 C52 78 42 91 29 97 M142 55 C154 42 166 35 180 32 M143 72 C160 85 175 96 190 99" fill="none" stroke="#715b38" stroke-width="8" stroke-linecap="round"/>
+   <g fill="#59472f"><circle cx="113" cy="53" r="5"/><circle cx="128" cy="55" r="4"/><circle cx="143" cy="59" r="5"/><circle cx="158" cy="64" r="4"/><circle cx="173" cy="70" r="5"/></g>
+   <path d="M205 83 C220 90 222 102 211 111" fill="none" stroke="#675434" stroke-width="7" stroke-linecap="round"/>
   </svg>
  </div>
- <img id="cat" src="kucing.jpg" alt="kucing seperti foto yang diberikan">
+ <img id="cat" src="kucing.jpg" alt="kucing">
  <div id="paw"><i class="toe t1"></i><i class="toe t2"></i><i class="toe t3"></i></div>
- <div id="hit">💥</div>
- <div id="hint">🔊 Dengarkan cicak • sentuh untuk memukul</div>
+ <div id="impact">💥</div><div id="bubble">🔊 CICAK!</div>
+ <div id="hint">🦎 Cari suara cicak • cicak bisa naik dinding & masuk lubang</div>
+ <div id="msg"><b>Siap berburu? 🐱</b><div class="desc">Cicak akan berhenti, lari mendadak, menempel di dinding, lalu kadang masuk lubang. Dengarkan arah suaranya!</div><button class="main" id="start">▶ MULAI BERBURU</button></div>
 </div>
-<footer>Game ramah kucing • tanpa iklan • sentuhan layar</footer>
+<footer>Game simulasi • aman dimainkan di layar HP/tablet</footer>
 </div>
 <script>
-let score=0,time=30,running=false,timer=null,raf=null,soundOn=true,audio=null,chirpTimer=null;
-const play=document.querySelector('#play'),g=document.querySelector('#gecko'),cat=document.querySelector('#cat'),paw=document.querySelector('#paw'),hit=document.querySelector('#hit'),msg=document.querySelector('#msg');
-const scoreEl=document.querySelector('#score'),timeEl=document.querySelector('#time'),soundBtn=document.querySelector('#sound');
+const W=document.querySelector('#world'),G=document.querySelector('#gecko'),C=document.querySelector('#cat'),P=document.querySelector('#paw'),I=document.querySelector('#impact'),B=document.querySelector('#bubble'),M=document.querySelector('#msg');
+const S=document.querySelector('#score'),T=document.querySelector('#time'),sound=document.querySelector('#sound'),pauseBtn=document.querySelector('#pause');
+let score=0,time=45,running=false,paused=false,timer=null,audio=null,soundOn=true,state='floor',moveTimer=null,chirpTimer=null;
+const clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 
-function audioInit(){if(!audio) audio=new (window.AudioContext||window.webkitAudioContext)(); if(audio.state==='suspended')audio.resume()}
+function initAudio(){if(!audio)audio=new (window.AudioContext||window.webkitAudioContext)();if(audio.state==='suspended')audio.resume()}
 function chirp(){
- if(!soundOn)return; audioInit(); const now=audio.currentTime;
- const o=audio.createOscillator(), gain=audio.createGain(), filt=audio.createBiquadFilter();
- o.type='triangle'; filt.type='bandpass'; filt.frequency.value=2600; filt.Q.value=7;
- o.frequency.setValueAtTime(1800,now); o.frequency.exponentialRampToValueAtTime(3100,now+.055); o.frequency.exponentialRampToValueAtTime(1450,now+.13);
- gain.gain.setValueAtTime(.0001,now); gain.gain.exponentialRampToValueAtTime(.16,now+.012); gain.gain.exponentialRampToValueAtTime(.0001,now+.15);
- o.connect(filt).connect(gain).connect(audio.destination);o.start(now);o.stop(now+.16);
+ if(!soundOn)return;initAudio();
+ const now=audio.currentTime,o=audio.createOscillator(),g=audio.createGain(),p=audio.createStereoPanner(),f=audio.createBiquadFilter();
+ const gr=G.getBoundingClientRect(),wr=W.getBoundingClientRect();
+ let pan=clamp(((gr.left+gr.width/2)-(wr.left+wr.width/2))/(wr.width/2),-1,1);
+ p.pan.setValueAtTime(pan,now);f.type='bandpass';f.frequency.value=2500;f.Q.value=8;o.type='triangle';
+ o.frequency.setValueAtTime(1900+Math.random()*300,now);o.frequency.exponentialRampToValueAtTime(3100,now+.05);o.frequency.exponentialRampToValueAtTime(1500,now+.14);
+ g.gain.setValueAtTime(.0001,now);g.gain.exponentialRampToValueAtTime(.15,now+.01);g.gain.exponentialRampToValueAtTime(.0001,now+.15);
+ o.connect(f).connect(g).connect(p).connect(audio.destination);o.start(now);o.stop(now+.16);
+ B.style.left=clamp((gr.left-wr.left)+25,8,W.clientWidth-100)+'px';B.style.top=clamp((gr.top-wr.top)-10,18,W.clientHeight-70)+'px';B.style.display='block';setTimeout(()=>B.style.display='none',650);
 }
-function moveGecko(){
- const pad=8,maxX=play.clientWidth-g.offsetWidth-pad,maxY=play.clientHeight-g.offsetHeight-pad-10;
- const x=pad+Math.random()*Math.max(1,maxX), y=pad+Math.random()*Math.max(1,maxY*.82);
- g.style.left=x+'px';g.style.top=y+'px';
- const rot=Math.random()*50-25; g.style.transform=`rotate(${rot}deg) scale(${.78+Math.random()*.3})`;
+function setGecko(x,y,rot=0,wall=false){
+ G.style.left=x+'px';G.style.top=y+'px';G.style.transform=`rotate(${rot}deg) scale(${.8+Math.random()*.25})`;G.classList.toggle('wall',wall)
 }
+function randomFloor(){
+ state='floor';G.style.display='block';
+ let x=8+Math.random()*(W.clientWidth-125), y=W.clientHeight*.18+Math.random()*(W.clientHeight*.65);
+ setGecko(x,y,Math.random()*50-25,false);
+}
+function randomWall(){
+ state='wall';G.style.display='block';
+ const left=Math.random()<.5, x=left?Math.max(3,W.clientWidth*.02):W.clientWidth*.91;
+ const y=35+Math.random()*(W.clientHeight-115);
+ setGecko(x,y,left?90:-90,true);
+}
+function nearHole(){
+ state='hole';G.style.display='block';
+ const h=Math.random()<.5?document.querySelector('#hole1'):document.querySelector('#hole2'),r=h.getBoundingClientRect(),wr=W.getBoundingClientRect();
+ setGecko(r.left-wr.left-28,r.top-wr.top-8,Math.random()*30-15,false);
+ chirp();setTimeout(()=>{if(!running)return;G.style.display='none';setTimeout(()=>{if(running&&!paused){randomFloor();chirp()}},700)},550);
+}
+function chooseMove(){
+ if(!running||paused)return;
+ const n=Math.random();
+ if(n<.18)nearHole();else if(n<.47)randomWall();else randomFloor();
+ let delay=650+Math.random()*1450;
+ if(Math.random()<.25)delay=250+Math.random()*450;
+ clearTimeout(moveTimer);moveTimer=setTimeout(chooseMove,delay);
+}
+function catAttack(){
+ const gr=G.getBoundingClientRect(),wr=W.getBoundingClientRect(),cx=gr.left-wr.left,cy=gr.top-wr.top;
+ C.classList.remove('lunge');P.classList.remove('swing');void C.offsetWidth;
+ const targetX=clamp(cx-105,-35,W.clientWidth-190),targetY=clamp(cy+35,W.clientHeight-250,W.clientHeight-100);
+ C.style.left=targetX+'px';C.style.top=targetY+'px';C.style.bottom='auto';
+ C.classList.add('lunge');P.style.left=clamp(cx-15,20,W.clientWidth-105)+'px';P.style.top=clamp(cy-45,55,W.clientHeight-150)+'px';P.style.display='block';P.classList.add('swing');
+ setTimeout(()=>{P.style.display='none';C.style.left='-45px';C.style.top='auto';C.style.bottom='-48px'},430);
+}
+function hit(){
+ if(!running||paused)return;
+ initAudio();score++;S.textContent=score;catAttack();chirp();
+ const r=G.getBoundingClientRect(),wr=W.getBoundingClientRect();I.style.left=clamp(r.left-wr.left+20,10,W.clientWidth-60)+'px';I.style.top=clamp(r.top-wr.top-10,30,W.clientHeight-80)+'px';I.style.display='block';I.classList.remove('show');void I.offsetWidth;I.classList.add('show');
+ setTimeout(()=>I.style.display='none',500);
+ setTimeout(()=>{if(running&&!paused){G.style.display='block';chooseMove()}},450);
+}
+G.addEventListener('pointerdown',e=>{e.preventDefault();hit()});
 function start(){
- audioInit(); if(running)return; running=true;score=0;time=30;scoreEl.textContent=0;timeEl.textContent=30;
- msg.style.display='none';g.style.display='block';moveGecko();chirp();
- clearInterval(timer); timer=setInterval(()=>{time--;timeEl.textContent=time;if(Math.random()<.45)chirp();if(time<=0)finish()},1000);
+ initAudio();running=true;paused=false;score=0;time=45;S.textContent=0;T.textContent=45;M.style.display='none';pauseBtn.textContent='Ⅱ';C.style.left='-45px';C.style.top='auto';C.style.bottom='-48px';randomFloor();chirp();chooseMove();
+ clearInterval(timer);timer=setInterval(()=>{if(!running||paused)return;time--;T.textContent=time;if(Math.random()<.34)chirp();if(time<=0)finish()},1000)
 }
-function finish(){running=false;clearInterval(timer);g.style.display='none';msg.innerHTML=`<b>🎉 Selesai!</b><div class="small">Skor kucing: <strong>${score}</strong><br>Tekan tombol untuk bermain lagi.</div><button class="main" id="start">▶ MAIN LAGI</button>`;msg.style.display='block';document.querySelector('#start').onclick=start}
-function catSwipe(){
- cat.classList.remove('swipe');paw.classList.remove('swipe');void cat.offsetWidth;
- cat.classList.add('swipe');paw.classList.add('swipe');
-}
-g.addEventListener('pointerdown',e=>{
- if(!running)return;e.preventDefault();audioInit();score++;scoreEl.textContent=score;catSwipe();
- const r=g.getBoundingClientRect(),p=play.getBoundingClientRect();hit.style.left=(r.left-p.left+25)+'px';hit.style.top=(r.top-p.top-5)+'px';hit.style.display='block';hit.classList.remove('hitAnim');void hit.offsetWidth;hit.classList.add('hitAnim');
- chirp();setTimeout(()=>{hit.style.display='none'},450);moveGecko();
-});
-soundBtn.onclick=()=>{soundOn=!soundOn;soundBtn.textContent=soundOn?'🔊':'🔇';if(soundOn)chirp()};
-document.querySelector('#start').onclick=start;
+function finish(){running=false;clearInterval(timer);clearTimeout(moveTimer);G.style.display='none';M.innerHTML=`<b>🎉 Perburuan selesai!</b><div class="desc">Skor kucing: <strong>${score}</strong><br>Berhasil memukul cicak sebanyak ${score} kali.</div><button class="main" id="again">▶ MAIN LAGI</button>`;M.style.display='block';document.querySelector('#again').onclick=start}
+pauseBtn.onclick=()=>{if(!running)return;paused=!paused;pauseBtn.textContent=paused?'▶':'Ⅱ';if(!paused){chooseMove()}else{clearTimeout(moveTimer)}}
+sound.onclick=()=>{soundOn=!soundOn;sound.textContent=soundOn?'🔊':'🔇';if(soundOn)chirp()}
+document.querySelector('#start').onclick=start
 </script>
 </body></html>
