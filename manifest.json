@@ -1,0 +1,10 @@
+{
+  "name":"Sentuh Cicak - Game Kucing",
+  "short_name":"Sentuh Cicak",
+  "start_url":"./index.html",
+  "display":"standalone",
+  "background_color":"#eee7d9",
+  "theme_color":"#596044",
+  "orientation":"portrait",
+  "icons":[]
+}

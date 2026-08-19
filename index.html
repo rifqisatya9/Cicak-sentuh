@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#596044"><link rel="manifest" href="manifest.json">
+<title>Sentuh Cicak</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;overflow:hidden;font-family:system-ui,sans-serif;background:#eee7d9}
+body{touch-action:manipulation}.app{height:100%;display:flex;flex-direction:column}
+header{height:64px;padding:10px 16px;background:#596044;color:#fff;display:flex;align-items:center;justify-content:space-between}
+h1{font-size:20px;margin:0}.score{font-weight:800}
+#arena{position:relative;flex:1;margin:10px;border-radius:22px;overflow:hidden;background:linear-gradient(135deg,#caa979,#ead0a3,#bd945f);box-shadow:inset 0 0 0 5px #8e6b45}
+.hole{position:absolute;width:55px;height:55px;border-radius:50%;background:#4e3828;box-shadow:inset 0 8px 15px #0008}
+.a{left:5%;top:13%}.b{right:6%;top:27%}.c{left:8%;bottom:15%}.d{right:9%;bottom:12%}
+#lizard{position:absolute;width:95px;height:55px;display:none;filter:drop-shadow(0 4px 3px #0005);transition:left .25s ease,top .25s ease}
+.body{position:absolute;left:25px;top:14px;width:52px;height:27px;border-radius:55%;background:#b98d4f;border:2px solid #73532e}
+.head{position:absolute;left:3px;top:11px;width:30px;height:25px;border-radius:55%;background:#c59a5e;border:2px solid #73532e}.eye{position:absolute;right:4px;top:5px;width:6px;height:6px;border-radius:50%;background:#111}
+.tail{position:absolute;left:67px;top:21px;width:30px;height:7px;border-radius:50%;background:#a77a3f;transform:rotate(18deg)}
+.leg{position:absolute;width:24px;height:7px;border-radius:8px;background:#a77a3f}.l1{left:23px;top:9px;transform:rotate(-35deg)}.l2{left:23px;top:37px;transform:rotate(35deg)}.l3{left:57px;top:9px;transform:rotate(35deg)}.l4{left:57px;top:37px;transform:rotate(-35deg)}
+.spot{position:absolute;left:42px;top:19px;width:7px;height:7px;border-radius:50%;background:#674526;box-shadow:13px 1px #674526,24px -1px #674526}
+#start{position:absolute;z-index:3;left:50%;top:50%;transform:translate(-50%,-50%);border:0;border-radius:18px;padding:18px 30px;background:#596044;color:white;font-size:20px;font-weight:800;box-shadow:0 5px 0 #3e432f}
+#info{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);background:#fffdf0dd;padding:8px 14px;border-radius:12px;font-size:12px;white-space:nowrap}
+footer{padding:8px 12px max(12px,env(safe-area-inset-bottom));background:#f7f1e6;text-align:center;font-size:12px}
+</style></head>
+<body><div class="app">
+<header><h1>🐾 Sentuh Cicak!</h1><div class="score">⭐ <span id="score">0</span> &nbsp; ⏱️ <span id="time">30</span></div></header>
+<div id="arena"><div class="hole a"></div><div class="hole b"></div><div class="hole c"></div><div class="hole d"></div>
+<button id="start">▶ MULAI</button><div id="lizard"><div class="body"></div><div class="head"><div class="eye"></div></div><div class="tail"></div><div class="leg l1"></div><div class="leg l2"></div><div class="leg l3"></div><div class="leg l4"></div><div class="spot"></div></div>
+<div id="info">Sentuh cicak untuk mendapat skor!</div></div>
+<footer>Dirancang untuk dimainkan kucing di layar HP/tablet 🐱</footer>
+</div>
+<script>
+const A=document.querySelector('#arena'),L=document.querySelector('#lizard'),S=document.querySelector('#score'),T=document.querySelector('#time'),B=document.querySelector('#start');
+let score=0,time=30,timer=null,running=false;
+function move(){let x=8+Math.random()*(A.clientWidth-111),y=8+Math.random()*(A.clientHeight-105);L.style.left=x+'px';L.style.top=y+'px';L.style.transform=`rotate(${Math.random()*30-15}deg)`}
+function start(){if(running)return;running=true;score=0;time=30;S.textContent=0;T.textContent=30;B.style.display='none';L.style.display='block';move();timer=setInterval(()=>{T.textContent=--time;if(time<=0)finish()},1000)}
+function finish(){running=false;clearInterval(timer);L.style.display='none';B.textContent=`SKOR ${score} — MAIN LAGI`;B.style.display='block'}
+L.addEventListener('pointerdown',e=>{if(!running)return;e.preventDefault();score++;S.textContent=score;move()});
+B.onclick=start;
+</script></body></html>
